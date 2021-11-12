@@ -12,33 +12,26 @@
 #include <WebSocketsServer.h>
 #include <ESPAsyncWebServer.h>
 
-#include "Ornament.h"
+#include "Ornament.h"           //
 
 #include <ArduinoJson.h>
 #include <ArduinoOTA.h>
 
 #include "Syslog.h"
-
-// Syslog server connection info
-#define SYSLOG_SERVER "172.16.10.100"
-#define SYSLOG_PORT 514
-
-// This device info
-#define DEVICE_HOSTNAME "xmas-server"
-#define APP_NAME "xmas-app"
+#include "Config.h"             // Change Config.h.sample to Config.h and add details
 
 //The udp library class
 WiFiUDP udpClient;
 
 Syslog syslog(udpClient, SYSLOG_SERVER, SYSLOG_PORT, DEVICE_HOSTNAME, APP_NAME, LOG_KERN);
 
+const char * hostName = "testbox";
 const char * udpAddress = "172.16.10.100";
 const int udpPort = 514;
 
 
 ornament Train;
 ornament Snowman;
-
 
 AsyncWebServer server(80); // server port 80
 WebSocketsServer websockets(81);
@@ -202,8 +195,8 @@ function send_data()
 
 void doLog(String message) {
 
-  String fullMessage = "[Today] [XMAS-Server]" + message;
-  if ( fullMessage.length() < 80 ) {
+  String fullMessage = "[Today] [XMAS-Server TEST" + message;
+   if ( fullMessage.length() < 80 ) {
    
     char Buf[100];
     fullMessage.toCharArray(Buf, 100);
@@ -296,8 +289,8 @@ void setup(void) {
   // ArduinoOTA.setPort(8266);
 
   // Hostname defaults to esp8266-[ChipID]
-  ArduinoOTA.setHostname("xmasserver");
-
+//  ArduinoOTA.setHostname("xmasserver");
+  ArduinoOTA.setHostname(hostName);
   // No authentication by default
   // ArduinoOTA.setPassword((const char *)"123");
 
