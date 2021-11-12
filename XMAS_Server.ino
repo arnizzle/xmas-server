@@ -12,6 +12,8 @@
 #include <WebSocketsServer.h>
 #include <ESPAsyncWebServer.h>
 
+#include "Ornament.h"
+
 #include <ArduinoJson.h>
 #include <ArduinoOTA.h>
 
@@ -22,81 +24,17 @@
 #define SYSLOG_PORT 514
 
 // This device info
-#define DEVICE_HOSTNAME "my-device"
-#define APP_NAME "my-app"
+#define DEVICE_HOSTNAME "xmas-server"
+#define APP_NAME "xmas-app"
 
 //The udp library class
 WiFiUDP udpClient;
+
 Syslog syslog(udpClient, SYSLOG_SERVER, SYSLOG_PORT, DEVICE_HOSTNAME, APP_NAME, LOG_KERN);
 
 const char * udpAddress = "172.16.10.100";
 const int udpPort = 514;
 
-
-class ornament{
-  public:
-    int LED;
-    long interval = 0;
-    long previousMillis = 0;
-    bool ledStatus = false;
-    String ornName = "";
-    
-    void setInterval(void) {
-//      interval = random(1000, 5000);
-      interval = random(300000, 500000);
-      Serial.print("Setting Interval");
-    }
-
-    void turnOn () {
-      digitalWrite(LED, HIGH);
-      ledStatus = true;
-    }
-    
-    void turnOff () {
-      digitalWrite(LED, LOW);
-      ledStatus = true;
-    }
-
-    void Setup() {
-        pinMode(LED,OUTPUT);
-    }
-
-    bool ornStatus() {
-      if (digitalRead(LED)) {
-        return true;
-      } else {
-        return false;
-      }
-      
-    }
-    
-    void toggle() {
-       
-        Serial.println("TOGGLE");
-        if (ledStatus) {
-          digitalWrite(LED, LOW);
-          Serial.print("LOW");
-        } else {
-          digitalWrite(LED, HIGH);
-          Serial.print("HIGH");
-        }
-        ledStatus =! ledStatus;  
-    }
-    
-    void checkStatus(void) {
-//      doLog("Checking Status...") ;
-      
-      // save the last time you blinked the LED 
-      unsigned long currentMillis = millis();
-
-      if(currentMillis - previousMillis  > interval) {
-        previousMillis = currentMillis; 
-        
-        toggle();
-        setInterval();
-    }
-  }
-};
 
 ornament Train;
 ornament Snowman;
@@ -276,10 +214,10 @@ void doLog(String message) {
   }
 }
 
-void notFound(AsyncWebServerRequest *request)
-{
-  request->send(404, "text/plain", "Page Not found");
-}
+//void notFound(AsyncWebServerRequest *request)
+//{
+//  request->send(404, "text/plain", "Page Not found");
+//}
 
 
 void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t length) {
@@ -406,7 +344,6 @@ void setup(void) {
     if (count > 30) {
       ESP.restart();
     }
-    // we can even make the ESP32 to sleep
   }
 
   Serial.println(WiFi.localIP());
@@ -421,21 +358,8 @@ void setup(void) {
   request->send_P(200, "text/html", webpage);
   });
 
-//   server.on("/led1/on", HTTP_GET, [](AsyncWebServerRequest * request)
-//  { 
-//    //digitalWrite(LED1,HIGH);
-//    request->send_P(200, "text/html", webpage);
-//  });
-//
-//
-//   server.on("/led1/off", HTTP_GET, [](AsyncWebServerRequest * request)
-//  { 
-//    // digitalWrite(LED1,LOW);
-//    request->send_P(200, "text/html", webpage);
-//  });
 
-  
-  server.onNotFound(notFound);
+//  server.onNotFound(notFound);
 
   server.begin();  // it will start webserver
   websockets.begin();

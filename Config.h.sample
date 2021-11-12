@@ -1,0 +1,9 @@
+// Syslog server connection info
+#define SYSLOG_SERVER "172.16.10.100"
+#define SYSLOG_PORT 514
+
+// This device info
+#define DEVICE_HOSTNAME "xmas-server"
+#define APP_NAME "xmas-app"
+
+
